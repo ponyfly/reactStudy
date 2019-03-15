@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>09_form</title>
+</head>
+<body>
+<div id="example"></div>
+
+<script src="https://cdn.bootcss.com/react/16.8.4/umd/react.development.js"></script>
+<script src="https://cdn.bootcss.com/react-dom/16.8.4/umd/react-dom.development.js"></script>
+<script type="text/javascript" src="../js/babel.min.js"></script>
+<script type="text/babel">
+  /*
+  需求: 自定义包含表单的组件
+    1. 界面如下所示
+    2. 输入用户名密码后, 点击登陆提示输入信息
+    3. 不提交表单
+  */
+
+  class Form extends React.Component {
+    constructor(props) {
+      super(props)
+      this.userName = React.createRef()
+      this.password = React.createRef()
+      this.state = {
+        user: {
+          userName: '',
+          password: ''
+        }
+      }
+    }
+    setUsername = () => {
+      const user = this.state.user
+      user.userName = this.userName.current.value
+      this.setState({ user })
+    }
+    setPassword = () => {
+      const user = this.state.user
+      user.password = this.password.current.value
+      this.setState({ user })
+    }
+    login = (e) => {
+      const { userName, password } = this.state.user
+      e.preventDefault()
+      alert(`用户信息：${ userName }, ${ password }`)
+    }
+    componentDidMount() {
+      console.log(this)
+    }
+    render() {
+      return (
+        <form action="/aaa">
+          <div>
+            用户名：<input type="text" ref={ this.userName } onChange={ this.setUsername } />
+          </div>
+          <div>
+            密码：<input type="password" ref={ this.password } onChange={ this.setPassword } />
+          </div>
+          <input type="submit" value="登陆" onClick={ this.login } />
+        </form>
+      )
+    }
+  }
+
+  ReactDOM.render(<Form/>, document.getElementById('example'))
+
+</script>
+</body>
+</html>

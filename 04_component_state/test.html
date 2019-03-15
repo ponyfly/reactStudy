@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>07_component_state</title>
+</head>
+<body>
+
+<div id="example"></div>
+
+<script type="text/javascript" src="../js/react.development.js"></script>
+<script type="text/javascript" src="../js/react-dom.development.js"></script>
+<script type="text/javascript" src="../js/babel.min.js"></script>
+
+<script type="text/babel">
+  /*
+  需求: 自定义组件, 功能说明如下
+    1. 显示h2标题, 初始文本为: 你喜欢我
+    2. 点击标题更新为: 我喜欢你
+  */
+  class Like extends React.Component{
+    constructor(props) {
+      super(props)
+
+      this.state = {
+        isLike: false
+      }
+    }
+    render() {
+      const text = this.state.isLike ? '我喜欢你' : '你喜欢我'
+      return (
+        <h1 onClick={this.toggleLike.bind(this)}>{text}</h1>
+      )
+    }
+    toggleLike() {
+      // 自定义方法的this指向为undefined，解决方法有两个：1.使用bind,2.使用箭头函数
+      console.log(this)
+      this.setState({
+        isLike: !this.state.isLike
+      })
+    }
+  }
+
+  ReactDOM.render(<Like/>, document.getElementById('example'))
+</script>
+</body>
+</html>
+

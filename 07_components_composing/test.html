@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>05_components_composing</title>
+</head>
+<body>
+
+  <div id="example"></div>
+
+  <script src="https://cdn.bootcss.com/react/16.8.4/umd/react.development.js"></script>
+  <script src="https://cdn.bootcss.com/react-dom/16.8.4/umd/react-dom.development.js"></script>
+  <script type="text/javascript" src="../js/prop-types.js"></script>
+  <script type="text/javascript" src="../js/babel.min.js"></script>
+  <script type="text/babel">
+
+    /*
+    1. 功能界面的组件化编码流程
+      1). 拆分组件
+      2). 实现静态组件
+      3). 实现动态组件
+        a. 动态显示初始化数据
+          a). 数据类型
+          b). 数据名称
+          c). 保存在哪个组件?
+        b. 交互
+    2. 2个重要问题
+      1). 状态数据保存在哪个组件?
+        这个数据是某个组件需要(给它), 还是某些组件需要(给父组件)
+      2). 修改状态数据的行为在哪个组件?
+        状态数据在哪个组件, 修改数据的行为就应该定义在哪个组件
+    */
+
+    class App extends React.Component{
+      constructor(props){
+        super(props)
+        this.state = {
+          todos: ['吃饭','睡觉','打豆豆']
+        }
+      }
+      addTodo = todo => {
+        this.state.todos.unshift(todo)
+        this.setState(this.state.todos)
+      }
+      render() {
+        return (
+          <div className="app">
+            <AddTodo addTodo={ this.addTodo } />
+            <TodoList todos={ this.state.todos } />
+          </div>
+        )
+      }
+    }
+
+    class TodoList extends React.Component{
+      render() {
+        const { todos } = this.props
+        return (
+          <ul>
+            {
+              todos.map((todo, index) => <li key={ index }>{ todo }</li>)
+            }
+          </ul>
+        )
+      }
+    }
+
+    class AddTodo extends React.Component{
+        constructor(props) {
+          super(props)
+          this.inputText = React.createRef()
+        }
+        add = () => {
+          const todo = this.inputText.current.value.trim()
+          if(!todo){
+            alert('必须制定')
+            return
+          }
+          this.props.addTodo(todo)
+          this.inputText.current.value = ''
+        }
+
+        componentDidMount() {
+          if (this.inputText) this.inputText.current.focus()
+        }
+        render() {
+          return (
+            <div className="todo--add">
+              <input type="text" ref={ this.inputText } placeholder="说说你的todo"/>
+              <button onClick={ this.add }>添加todo</button>
+            </div>
+          )
+        }
+    }
+
+    ReactDOM.render(<App/>, document.getElementById('example'))
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>07_component_refs</title>
+</head>
+<body>
+<br>
+  <div id="example"></div>
+  <div id="example1"></div>
+  <div id="example2"></div>
+  <div id="example3"></div>
+
+<script src="https://cdn.bootcss.com/react/16.8.4/umd/react.development.js"></script>
+<script src="https://cdn.bootcss.com/react-dom/16.8.4/umd/react-dom.development.js"></script>
+  <script type="text/javascript" src="../js/babel.min.js"></script>
+
+  <script type="text/babel">
+    //ref的值取决于节点的类型
+    // 当ref是一个普通的HTML元素，ref的current指向绑定的dom元素
+    // 当ref指向一个类组件时，ref的current指向已挂在的实例
+    // 不能再函数式组件使用ref,因为她没有实例
+   // ref的两种定义方式
+    // 1.使用React.createRef()
+    class LgComponent1 extends React.Component{
+      constructor(props){
+        super(props)
+        this.textInput = React.createRef()
+      }
+      render() {
+        console.log('render')
+        return (
+          <div className="class1">
+            <input type="text" ref={ this.textInput } />
+          </div>
+        )
+      }
+      componentWillMount() {
+        console.log('componentWillMount')
+      }
+      componentDidMount() {
+        console.log('componentDidMount')
+        console.log(this.textInput)
+        if (this.textInput) this.textInput.current.focus()
+      }
+    }
+    ReactDOM.render(<LgComponent1/>, document.getElementById('example'))
+    // 2.使用回调定义ref
+    class LgComponent2 extends React.Component{
+        constructor(props) {
+          super(props)
+          this.textInput = null
+          this.setTextInput = this.setTextInput.bind(this) // 绑定this的方法之一bind
+        }
+        setTextInput(ele) {
+          console.log(ele)
+          this.textInput = ele
+        }
+        focusTextInput = () => { // 绑定this的方法之二 箭头函数
+          if(this.textInput) this.textInput.focus()
+        }
+        componentWillMount() {
+
+        }
+        componentDidMount() {
+          console.log('componentDidMount')
+          this.focusTextInput()
+        }
+        render() {
+          return (
+            <div className="textinput">
+              <input ref={ this.setTextInput } />
+            </div>
+          )
+        }
+    }
+    ReactDOM.render(<LgComponent2/>, document.getElementById('example1'))
+    // 3.为类组件添加ref ref指向类组件的实例
+    class LgComponent3 extends React.Component{
+      constructor(props){
+        super(props)
+        this.textInput = React.createRef()
+      }
+      componentDidMount() {
+        console.log(this.textInput)
+      }
+      render() {
+        return (
+          <div className="lg3">
+            <LgComponent2 ref={ this.textInput} />
+          </div>
+        )
+      }
+    }
+    ReactDOM.render(<LgComponent3/>, document.getElementById('example2'))
+  </script>
+</body>
+</html>
